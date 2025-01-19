@@ -1,4 +1,6 @@
-﻿using Bookify.Application.Apartments.SearchApartments;
+﻿using Asp.Versioning;
+using Bookify.Application.Apartments.SearchApartments;
+using Bookify.Domain.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,8 @@ namespace Bookify.Api.Controllers.Apartments;
 
 [Authorize]
 [ApiController]
-[Route("api/apartments")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/apartments")]
 public class ApartmentsController : ControllerBase
 {
     private readonly ISender _sender;
@@ -25,7 +28,7 @@ public class ApartmentsController : ControllerBase
     {
         var query = new SearchApartmentsQuery(startDate, endDate);
 
-        var result = await _sender.Send(query, cancellationToken);
+        Result<IReadOnlyList<ApartmentResponse>> result = await _sender.Send(query, cancellationToken);
 
         return Ok(result.Value);
     }
