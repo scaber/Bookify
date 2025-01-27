@@ -1,10 +1,12 @@
-﻿namespace Bookify.Domain.Users;
+﻿using Bookify.Domain.Entities.Authorization;
 
-public sealed class Role
+namespace Bookify.Domain.Users;
+
+public sealed class RoleSilinecek
 {
-    public static readonly Role Registered = new(1, "Registered");
+    public static readonly RoleSilinecek Registered = new(1, "Registered");
 
-    public Role(int id, string name)
+    public RoleSilinecek(int id, string name)
     {
         Id = id;
         Name = name;

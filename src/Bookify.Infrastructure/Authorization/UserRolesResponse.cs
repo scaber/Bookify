@@ -1,5 +1,5 @@
-﻿using Bookify.Domain.Users;
-
+﻿using Bookify.Domain.Entities.Authorization;
+ 
 namespace Bookify.Infrastructure.Authorization;
 
 internal sealed class UserRolesResponse

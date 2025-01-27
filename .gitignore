@@ -16,3 +16,4 @@ obj/
 *.userprefs
 .project
 .settings/
+.containers

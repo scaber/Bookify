@@ -1,5 +1,5 @@
-﻿using Bookify.Domain.Users;
-using Microsoft.EntityFrameworkCore;
+﻿using Bookify.Domain.Entities.Authorization;
+ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Bookify.Infrastructure.Configurations;
@@ -10,8 +10,6 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
     {
         builder.ToTable("permissions");
 
-        builder.HasKey(permission => permission.Id);
-
-        builder.HasData(Permission.UsersRead);
+        builder.HasKey(permission => permission.Id); 
     }
 }

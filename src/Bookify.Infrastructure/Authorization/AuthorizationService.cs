@@ -1,4 +1,5 @@
 ﻿using Bookify.Application.Abstractions.Caching;
+using Bookify.Domain.Entities.Authorization;
 using Bookify.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,26 +39,45 @@ internal sealed class AuthorizationService
 
         return roles;
     }
-
-    public async Task<HashSet<string>> GetPermissionsForUserAsync(string identityId)
+ 
+    public async Task<UserRolePermissionResponse> GetUserRolePermissionAsync(string ctrlName,Guid userId)
     {
-        string cacheKey = $"auth:permissions-{identityId}";
-        HashSet<string>? cachedPermissions = await _cacheService.GetAsync<HashSet<string>>(cacheKey);
+        string cacheKey = $"auth:user-permission-{ctrlName}-{userId}";
+        UserRolePermissionResponse? cachedUserPermissions = await _cacheService.GetAsync<UserRolePermissionResponse>(cacheKey);
 
-        if (cachedPermissions is not null)
+        if (cachedUserPermissions is not null)
         {
-            return cachedPermissions;
-        }
+            return cachedUserPermissions;
+        } 
+     
+        var userPermission = from yet in _dbContext.Set<Permission>()
+                              join kyet in _dbContext.Set<UserPermission>() on yet.Id equals kyet.PermissionId
+                              where yet.Name == ctrlName && kyet.UserId == userId
+                              select new UserRolePermissionResponse
+                              {
+                                  Name = yet.Name,
+                                  CanRead= kyet.Read,
+                                  CanDelete= kyet.Delete,
+                                  CanWrite= kyet.Write
+                              };
+        var rolePermission = from yet in _dbContext.Set<Permission>()
+                        join rYet in _dbContext.Set<RolePermission>() on yet.Id equals rYet.PermissionId
+                        join kRol in _dbContext.Set<UserRole>() on rYet.RoleId equals kRol.RoleId
+                        where yet.Name == ctrlName && kRol.UserId == userId
+                        select new UserRolePermissionResponse
+                        {
+                            Name = yet.Name,
+                            CanRead = rYet.Read,
+                            CanDelete= rYet.Delete,
+                            CanWrite= rYet.Write
+                        };
+        
+        
+        var result = userPermission.Union(rolePermission).Distinct().FirstOrDefault() ?? new UserRolePermissionResponse();
+        await _cacheService.SetAsync(cacheKey, result);
 
-        ICollection<Permission> permissions = await _dbContext.Set<User>()
-            .Where(u => u.IdentityId == identityId)
-            .SelectMany(u => u.Roles.Select(r => r.Permissions))
-            .FirstAsync();
+        return result;
 
-        var permissionsSet = permissions.Select(p => p.Name).ToHashSet();
 
-        await _cacheService.SetAsync(cacheKey, permissionsSet);
-
-        return permissionsSet;
     }
 }

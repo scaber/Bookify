@@ -1,4 +1,5 @@
 ﻿using Bookify.Domain.Abstractions;
+using Bookify.Domain.Entities.Authorization;
 using Bookify.Domain.Users.Events;
 
 namespace Bookify.Domain.Users;
@@ -28,6 +29,8 @@ public sealed class User : Entity
     public string IdentityId { get; private set; } = string.Empty;
 
     public IReadOnlyCollection<Role> Roles => _roles.ToList();
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
 
     public static User Create(FirstName firstName, LastName lastName, Email email)
     {
@@ -35,7 +38,7 @@ public sealed class User : Entity
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
 
-        user._roles.Add(Role.Registered);
+        //user._roles.Add(Role.Registered);
 
         return user;
     }
