@@ -47,8 +47,12 @@ internal sealed class MenusQueryHandler
             """;
 
         IEnumerable<MenuResponse> menuResponses = await connection
-            .QueryAsync<MenuResponse>(sql);
+            .QueryAsync<MenuResponse>(sql,new
+            {
+                userId
+            });
 
+       
 
         return menuResponses.ToList();
     }

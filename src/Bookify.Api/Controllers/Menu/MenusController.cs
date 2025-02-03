@@ -1,4 +1,4 @@
-﻿ 
+﻿
 using Asp.Versioning;
 using Bookify.Application.Abstractions.Caching;
 using Bookify.Application.Apartments.SearchApartments;
@@ -24,14 +24,11 @@ public class MenusController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMenus(
-        DateOnly startDate,
-        DateOnly endDate,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> GetMenus(CancellationToken cancellationToken)
     {
         var query = new MenusQuery();
 
-        Result<IReadOnlyList<  MenuResponse>> result = await _sender.Send(query, cancellationToken);
+        Result<IReadOnlyList<MenuResponse>> result = await _sender.Send(query, cancellationToken);
 
         return Ok(result.Value);
     }

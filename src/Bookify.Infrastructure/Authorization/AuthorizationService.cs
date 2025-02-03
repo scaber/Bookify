@@ -1,5 +1,5 @@
 ﻿using Bookify.Application.Abstractions.Caching;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 using Bookify.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -73,7 +73,7 @@ internal sealed class AuthorizationService
                         };
         
         
-        var result = userPermission.Union(rolePermission).Distinct().FirstOrDefault() ?? new UserRolePermissionResponse();
+        var result = userPermission.Union(rolePermission).FirstOrDefault() ?? new UserRolePermissionResponse();
         await _cacheService.SetAsync(cacheKey, result);
 
         return result;

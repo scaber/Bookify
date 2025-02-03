@@ -4,7 +4,7 @@ using System.Text;
 using Bookify.Domain.Abstractions;
 using Bookify.Domain.Users;
 
-namespace Bookify.Domain.Entities.Authorization
+namespace Bookify.Domain.Authorization
 {
   public class UserRole : Entity
   {

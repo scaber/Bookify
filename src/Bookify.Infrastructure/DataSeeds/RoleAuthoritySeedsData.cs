@@ -1,4 +1,4 @@
-﻿using Bookify.Domain.Entities.Authorization;
+﻿using Bookify.Domain.Authorization;
 using Bookify.Infrastructure;
 
 namespace Bookify.Data.EntityFramework.DataSeeds
@@ -9,10 +9,10 @@ namespace Bookify.Data.EntityFramework.DataSeeds
     public static void Seed(ApplicationDbContext ctx )
     {
       var admin = ctx.Set<Role>().FirstOrDefault(x => x.Name == "domain_admin");
-      var yetkiler = ctx.Set<Permission>().ToList();
+      var permissions = ctx.Set<Permission>().ToList();
       var adminRolYetkileri = new List<RolePermission>();
 
-      foreach (var yetki in yetkiler)
+      foreach (var permission in permissions)
       {
         adminRolYetkileri.Add(new RolePermission
         { 
@@ -20,7 +20,7 @@ namespace Bookify.Data.EntityFramework.DataSeeds
           Write = true,
           Delete = true,
           RoleId = admin.Id,
-          PermissionId = yetki.Id,
+          PermissionId = permission.Id,
         });
       };
 

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Text;
 
-namespace Bookify.Domain.Entities.Authorization
+namespace Bookify.Domain.Authorization
 {
     public class Role : Entity
     {

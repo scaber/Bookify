@@ -1,4 +1,4 @@
-﻿using Bookify.Domain.Entities.Authorization;
+﻿using Bookify.Domain.Authorization;
 
 namespace Bookify.Domain.Users;
 

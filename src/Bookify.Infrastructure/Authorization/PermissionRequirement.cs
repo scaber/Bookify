@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics;
 using Bookify.Domain.Users;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bookify.Infrastructure.Authorization;

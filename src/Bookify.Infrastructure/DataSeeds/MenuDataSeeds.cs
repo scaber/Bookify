@@ -1,4 +1,4 @@
-﻿using Bookify.Domain.Entities.Authorization;
+﻿using Bookify.Domain.Authorization;
 using Bookify.Domain.Menu;
 using Bookify.Infrastructure;
 
@@ -8,14 +8,14 @@ namespace Bookify.Data.EntityFramework.DataSeeds
     {
         public static void Seed(ApplicationDbContext ctx)
         {
-            var menuler = (MenuListesi);
-            var yetkiler = ctx.Set<Permission>().ToList();
+            var menuler = (MenuLists);
+            var permissions = ctx.Set<Permission>().ToList();
 
-            var menuList = menuler.Select(m => SetMenu(m, yetkiler)).ToList();
-            var menulerVeAltMenuler = menuList.Flatten(i => i.SubMenus).ToList();
+            var menuList = menuler.Select(m => SetMenu(m, permissions)).ToList();
+            var menusAndSubMenus = menuList.Flatten(i => i.SubMenus).ToList();
 
-            DeleteMenu(ctx, menulerVeAltMenuler);
-            UpsertMenu(ctx, menulerVeAltMenuler);
+            DeleteMenu(ctx, menusAndSubMenus);
+            UpsertMenu(ctx, menusAndSubMenus);
         }
 
         private static Menu SetMenu(MenuSeedModel menu, List<Permission> permissions)
@@ -35,7 +35,7 @@ namespace Bookify.Data.EntityFramework.DataSeeds
             return menutoInsert;
         }
 
-        public static readonly List<MenuSeedModel> MenuListesi = new List<MenuSeedModel>
+        public static readonly List<MenuSeedModel> MenuLists = new List<MenuSeedModel>
     {
 
     new MenuSeedModel("menu-1", "home", "fas fa-home", "UI.Dashboard", "Menü üzerindeki > Ana Sayfa", 1, "/", 1),

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Bookify.Domain.Abstractions;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 using Bookify.Domain.Users;
 
-namespace Bookify.Domain.Entities.Authorization
+namespace Bookify.Domain.Authorization
 {
     public class UserPermission: Entity
     {

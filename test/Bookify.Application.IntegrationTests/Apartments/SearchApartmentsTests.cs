@@ -19,7 +19,7 @@ public class SearchApartmentsTests : BaseIntegrationTest
         var query = new SearchApartmentsQuery(new DateOnly(2024, 1, 10), new DateOnly(2024, 1, 1));
 
         // Act
-        Result<IReadOnlyList<MenuResponse>> result = await Sender.Send(query);
+        Result<IReadOnlyList<ApartmentResponse>> result = await Sender.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -33,7 +33,7 @@ public class SearchApartmentsTests : BaseIntegrationTest
         var query = new SearchApartmentsQuery(new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 10));
 
         // Act
-        Result<IReadOnlyList<MenuResponse>> result = await Sender.Send(query);
+        Result<IReadOnlyList<ApartmentResponse>> result = await Sender.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

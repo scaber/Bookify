@@ -1,4 +1,4 @@
-﻿using Bookify.Domain.Entities.Authorization;
+﻿using Bookify.Domain.Authorization;
 using Bookify.Domain.Users;
 using Bookify.Infrastructure;
 
@@ -22,10 +22,10 @@ namespace Bookify.Data.EntityFramework.DataSeeds
         });
       };
 
-      UpsertYetki(ctx, adminRolYetkileri);
+      UpsertPermission(ctx, adminRolYetkileri);
     
     }
-    private static void UpsertYetki(ApplicationDbContext ctx, List<UserRole> userRoles)
+    private static void UpsertPermission(ApplicationDbContext ctx, List<UserRole> userRoles)
     {
       ctx.Upsert(userRoles, (x, y) => y.UserId == x.UserId);
       //ctx.SaveChanges();

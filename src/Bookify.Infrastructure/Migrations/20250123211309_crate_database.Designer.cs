@@ -116,7 +116,7 @@ namespace Bookify.Infrastructure.Migrations
                     b.ToTable("bookings", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.Permission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.Permission", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,7 +145,7 @@ namespace Bookify.Infrastructure.Migrations
                     b.ToTable("permissions", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.Role", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,7 +180,7 @@ namespace Bookify.Infrastructure.Migrations
                     b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.RolePermission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.RolePermission", b =>
                 {
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid")
@@ -215,7 +215,7 @@ namespace Bookify.Infrastructure.Migrations
                     b.ToTable("role_permissions", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.UserPermission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.UserPermission", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -254,7 +254,7 @@ namespace Bookify.Infrastructure.Migrations
                     b.ToTable("user_permission", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.UserRole", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.UserRole", b =>
                 {
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid")
@@ -711,7 +711,7 @@ namespace Bookify.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.Role", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.Role", b =>
                 {
                     b.HasOne("Bookify.Domain.Users.User", null)
                         .WithMany("Roles")
@@ -719,16 +719,16 @@ namespace Bookify.Infrastructure.Migrations
                         .HasConstraintName("fk_roles_user_user_id");
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.RolePermission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.RolePermission", b =>
                 {
-                    b.HasOne("Bookify.Domain.Entities.Authorization.Permission", "Permission")
+                    b.HasOne("Bookify.Domain.Authorization.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_role_permissions_permissions_permission_id");
 
-                    b.HasOne("Bookify.Domain.Entities.Authorization.Role", "Role")
+                    b.HasOne("Bookify.Domain.Authorization.Role", "Role")
                         .WithMany("RolePermission")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -740,9 +740,9 @@ namespace Bookify.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.UserPermission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.UserPermission", b =>
                 {
-                    b.HasOne("Bookify.Domain.Entities.Authorization.Permission", "Permission")
+                    b.HasOne("Bookify.Domain.Authorization.Permission", "Permission")
                         .WithMany("UserPermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -761,9 +761,9 @@ namespace Bookify.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.UserRole", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.UserRole", b =>
                 {
-                    b.HasOne("Bookify.Domain.Entities.Authorization.Role", "Role")
+                    b.HasOne("Bookify.Domain.Authorization.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -816,14 +816,14 @@ namespace Bookify.Infrastructure.Migrations
                         .HasConstraintName("fk_reviews_user_user_id");
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.Permission", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserPermissions");
                 });
 
-            modelBuilder.Entity("Bookify.Domain.Entities.Authorization.Role", b =>
+            modelBuilder.Entity("Bookify.Domain.Authorization.Role", b =>
                 {
                     b.Navigation("RolePermission");
 

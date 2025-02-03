@@ -1,5 +1,5 @@
 ﻿using Bookify.Domain.Abstractions;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 using Bookify.Domain.Users.Events;
 
 namespace Bookify.Domain.Users;

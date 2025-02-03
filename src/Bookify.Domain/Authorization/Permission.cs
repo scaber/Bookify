@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Bookify.Domain.Entities.Authorization
+namespace Bookify.Domain.Authorization
 {
     public class Permission:Entity
     { 

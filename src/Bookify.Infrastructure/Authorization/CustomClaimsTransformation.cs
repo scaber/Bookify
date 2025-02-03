@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Bookify.Domain.Users;
 using Bookify.Infrastructure.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 
 namespace Bookify.Infrastructure.Authorization;
 

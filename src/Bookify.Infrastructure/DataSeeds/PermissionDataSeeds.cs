@@ -1,27 +1,25 @@
 ﻿using Bookify.Infrastructure;
-using Bookify.Domain.Entities.Authorization;
+using Bookify.Domain.Authorization;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookify.Data.EntityFramework.DataSeeds
 {
     public static class PermissionDataSeeds
-    {
-
-
+    {  
         public static void Seed(ApplicationDbContext applicationDbContext, Assembly assembly)
         {
-            var menus = MenuDataSeeds.MenuListesi;
+            var menus = MenuDataSeeds.MenuLists;
             var menuTreeView = menus.Flatten(x => x.SubMenus).ToList();
 
             var permissions = PermissionList(menuTreeView, assembly);
             var permissionList = new List<Permission>(permissions);
 
-            permissions.ForEach(yetki =>
+            permissions.ForEach(permission =>
             {
-                if (yetki.Seviye != 1)
+                if (permission.Seviye != 1)
                 {
-                    var split = yetki.Name.Split('.');
+                    var split = permission.Name.Split('.');
                     var parentName = string.Join(".", split.Take(split.Length - 1));
                     if (permissionList.All(x => x.Name != parentName))
                     {
@@ -35,48 +33,39 @@ namespace Bookify.Data.EntityFramework.DataSeeds
                 }
             });
 
-            DeleteYetki(applicationDbContext, permissionList);
-            UpsertYetki(applicationDbContext, permissionList);
+            DeletePermission(applicationDbContext, permissionList);
+            UpsertPermission(applicationDbContext, permissionList);
 
         }
-        /// <summary>
-        /// Database'deki "Adı" listedekiler ile eşleşmeyenleri siler.
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="yetkiList"></param>
-        private static void DeleteYetki(ApplicationDbContext ctx, List<Permission> yetkiList)
+ 
+        private static void DeletePermission(ApplicationDbContext ctx, List<Permission> permissionList)
         {
-            ctx.Delete<Permission>(x => !yetkiList.Select(i => i.Name).Contains(x.Name));
+            ctx.Delete<Permission>(x => !permissionList.Select(i => i.Name).Contains(x.Name));
             ctx.SaveChanges();
         }
-
-        /// <summary>
-        /// Listedeki "Adı" ve database'deki eşleşen verileri [Update] eder, listedeki "Adı" database'de yok ise [Insert] Eder.
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="yetkiList"></param>
-        private static void UpsertYetki(ApplicationDbContext ctx, List<Permission> yetkiList)
+ 
+        private static void UpsertPermission(ApplicationDbContext ctx, List<Permission> permissionList)
         {
-            ctx.Upsert(yetkiList, (x, y) => y.Name == x.Name);
+            ctx.Upsert(permissionList, (x, y) => y.Name == x.Name);
             ctx.SaveChanges();
         }
 
         private static List<Permission> PermissionList(List<MenuSeedModel> menulerVeAltMenuler, Assembly assembly)
         {
-            var yetkiler = new List<Permission>
+            var permissions = new List<Permission>
             {
                 new Permission {Description = "Service", Name = "Service", Seviye = 1},
                 new Permission {Description = "UI", Name = "UI", Seviye = 1}
             };
          
-            yetkiler.AddRange(menulerVeAltMenuler.Select(x => new { x.PermissionName, x.PermissionDescription }).Distinct().Select(x => new Permission()
+            permissions.AddRange(menulerVeAltMenuler.Select(x => new { x.PermissionName, x.PermissionDescription }).Distinct().Select(x => new Permission()
             {
                 Seviye = x.PermissionName.Split('.').Length,
                 Description = x.PermissionDescription,
                 Name = x.PermissionName
             }).ToList());
 
-            yetkiler.AddRange(
+            permissions.AddRange(
             assembly.GetTypes()
             .Where(type => typeof(ControllerBase).IsAssignableFrom(type)) // Sadece ControllerBase türevlerini al
             .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public))
@@ -88,7 +77,7 @@ namespace Bookify.Data.EntityFramework.DataSeeds
                               Name = "Service." + x,
                               Seviye = 2
                           }));
-            return yetkiler;
+            return permissions;
         }
     }
 
