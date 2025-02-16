@@ -10,42 +10,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
-namespace Bookify.Api.Controllers.Authorization
+namespace Bookify.Api.Controllers.Authorization;
+
+
+
+[ApiController]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/rolePermission")]
+public class RolePermissionController : ControllerBase
 {
+    private readonly ISender _sender;
 
-
-    [ApiController]
-    [ApiVersion(ApiVersions.V1)]
-    [Route("api/v{version:apiVersion}/rolePermission")]
-    public class RolePermissionController : ControllerBase
+    public RolePermissionController(ISender sender)
     {
-        private readonly ISender _sender;
+        _sender = sender;
+    } 
 
-        public RolePermissionController(ISender sender)
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] RolePermissionRequest request,CancellationToken cancellationToken)
+    {
+        var command = new UpdateRolePermissionCommand(
+            request.RoleId,
+            request.PermissionId,
+            request.Read,
+            request.Write,
+            request.Delete
+        );
+        Result<bool> result = await _sender.Send(command, cancellationToken);
+
+
+        if (result.IsFailure)
         {
-            _sender = sender;
-        } 
-
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] RolePermissionRequest request,CancellationToken cancellationToken)
-        {
-            var command = new UpdateRolePermissionCommand(
-                request.RoleId,
-                request.PermissionId,
-                request.Read,
-                request.Write,
-                request.Delete
-            );
-            Result<bool> result = await _sender.Send(command, cancellationToken);
-
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok("RolePermission updated successfully.");
+            return BadRequest(result.Error);
         }
 
+        return Ok("RolePermission updated successfully.");
     }
+
 }

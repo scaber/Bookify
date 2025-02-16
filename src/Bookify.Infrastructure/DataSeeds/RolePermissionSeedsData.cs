@@ -16,6 +16,7 @@ namespace Bookify.Data.EntityFramework.DataSeeds
       {
         adminRolYetkileri.Add(new RolePermission
         { 
+          Id = Guid.NewGuid(),
           Read = true,
           Write = true,
           Delete = true,

@@ -68,8 +68,7 @@ namespace Bookify.Data.EntityFramework.DataSeeds
             permissions.AddRange(
             assembly.GetTypes()
             .Where(type => typeof(ControllerBase).IsAssignableFrom(type)) // Sadece ControllerBase türevlerini al
-            .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public))
-            .Where(m => m.IsPublic && m.DeclaringType != null)
+             .Where(m => m.IsPublic )
                           .Select(x => x.Name.Replace("Controller", "")).Distinct()
                           .Select(x => new Permission()
                           {

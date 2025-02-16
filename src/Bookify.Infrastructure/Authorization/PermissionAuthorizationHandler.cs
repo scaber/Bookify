@@ -53,7 +53,7 @@ internal sealed class PermissionAuthorizationHandler : AuthorizationHandler<Perm
                     }
                 }
     
-                var user_id = context.User.FindAll("user_id").FirstOrDefault(); 
+                var user_id = context.User.FindAll("sub").FirstOrDefault(); 
 
                 if (Guid.TryParse(user_id.Value, out Guid userIdGuid))
                 {
@@ -70,7 +70,7 @@ internal sealed class PermissionAuthorizationHandler : AuthorizationHandler<Perm
 
                 AuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
 
-                UserRolePermissionResponse permission = await authorizationService.GetUserRolePermissionAsync(ctrlName, userIdGuid);
+                UserRolePermissionResponse permission = await authorizationService.GetUserRolePermissionAsync("Service."+ctrlName, userIdGuid);
 
                 if (permission == null)
                     context.Fail();

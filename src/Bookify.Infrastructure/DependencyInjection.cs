@@ -8,6 +8,7 @@ using Bookify.Domain.Abstractions;
 using Bookify.Domain.Apartments;
 using Bookify.Domain.Authorization;
 using Bookify.Domain.Bookings;
+using Bookify.Domain.Menu;
 using Bookify.Domain.Reviews;
 using Bookify.Domain.Users;
 using Bookify.Infrastructure.Authentication;
@@ -22,6 +23,7 @@ using Dapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +76,8 @@ public static class DependencyInjection
 
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IMenuRepository, MenuRepository>();
 
         services.AddScoped<IReviewRepository, ReviewRepository>();
 
@@ -127,7 +131,16 @@ public static class DependencyInjection
 
         services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
-        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        //services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>(); 
+        var policy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser().AddRequirements(new PermissionRequirement())
+        .Build();
+
+        services.AddMvc(config =>
+        {
+
+            config.Filters.Add(new AuthorizeFilter(policy));
+        });
     }
 
     private static void AddCaching(IServiceCollection services, IConfiguration configuration)

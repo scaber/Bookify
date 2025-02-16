@@ -71,7 +71,7 @@ internal sealed class AuthorizationService
                             CanDelete= rYet.Delete,
                             CanWrite= rYet.Write
                         };
-        
+        var ase = rolePermission.ToList();
         
         var result = userPermission.Union(rolePermission).FirstOrDefault() ?? new UserRolePermissionResponse();
         await _cacheService.SetAsync(cacheKey, result);

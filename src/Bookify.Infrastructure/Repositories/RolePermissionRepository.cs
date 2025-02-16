@@ -1,5 +1,4 @@
 ﻿using Bookify.Domain.Authorization;
-using Bookify.Domain.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Infrastructure.Repositories;

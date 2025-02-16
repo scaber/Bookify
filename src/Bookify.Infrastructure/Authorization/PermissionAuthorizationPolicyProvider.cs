@@ -21,7 +21,7 @@ internal sealed class PermissionAuthorizationPolicyProvider : DefaultAuthorizati
         {
             return policy;
         }
-
+      
         AuthorizationPolicy permissionPolicy = new AuthorizationPolicyBuilder()
              .RequireAuthenticatedUser()
              .AddRequirements(new PermissionRequirement())

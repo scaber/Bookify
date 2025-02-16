@@ -30,24 +30,33 @@ internal sealed class MenusQueryHandler
         using IDbConnection connection = _sqlConnectionFactory.CreateConnection();
 
         const string sql = """
-            SELECT DISTINCT m.* 
-            FROM menu m
-            WHERE m.permission_id IN (
-            SELECT ra.permission_id 
-            FROM "user-roles"  ur
-            INNER JOIN roles    r ON ur.role_id  = r.Id
-            INNER JOIN role_permissions    ra ON r.Id = ra.role_id 
-            WHERE ur.user_id  = @userId
+            WITH RECURSIVE MenuHierarchy AS (
+                -- Kullanıcının doğrudan yetkili olduğu menüler
+                SELECT DISTINCT m.*
+                FROM menu m
+                WHERE m.permission_id IN (
+                    SELECT ra.permission_id 
+                    FROM "user-roles" ur
+                    INNER JOIN roles r ON ur.role_id = r.Id
+                    INNER JOIN role_permissions ra ON r.Id = ra.role_id 
+                    WHERE ur.user_id = @userId
+                    UNION
+                    SELECT up.permission_id  
+                    FROM user_permission up 
+                    WHERE up.user_id = '@userId'
+                )
 
-            UNION
+                UNION
 
-            SELECT up.permission_id  
-            FROM user_permission up 
-            WHERE up.user_id =  @userId);
+                -- Yetkili menülerin alt menülerini de ekle
+                SELECT m.*
+                FROM menu m
+                INNER JOIN MenuHierarchy mh ON m.top_menu_id = mh.id
+            )
             """;
 
         IEnumerable<MenuResponse> menuResponses = await connection
-            .QueryAsync<MenuResponse>(sql,new
+            .QueryAsync<MenuResponse,MenuResponse>(sql,new
             {
                 userId
             });
