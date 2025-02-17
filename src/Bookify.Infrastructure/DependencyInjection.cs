@@ -46,7 +46,7 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, EmailService>();
 
         AddPersistence(services, configuration);
-
+ 
         AddCaching(services, configuration);
 
         AddAuthentication(services, configuration);
@@ -78,6 +78,8 @@ public static class DependencyInjection
         services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IMenuRepository, MenuRepository>();
+        services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
+        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
         services.AddScoped<IReviewRepository, ReviewRepository>();
 
@@ -88,6 +90,7 @@ public static class DependencyInjection
 
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
     }
+    
 
     private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
     {

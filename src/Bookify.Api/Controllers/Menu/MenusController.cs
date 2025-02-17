@@ -2,7 +2,7 @@
 using Asp.Versioning;
 using Bookify.Application.Abstractions.Caching;
 using Bookify.Application.Apartments.SearchApartments;
-using Bookify.Application.Menu;
+using Bookify.Application.Menus;
 using Bookify.Domain.Abstractions;
 using Bookify.Infrastructure.Authorization;
 using MediatR;

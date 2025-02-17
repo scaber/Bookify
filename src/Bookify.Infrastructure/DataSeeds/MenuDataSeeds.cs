@@ -38,10 +38,10 @@ namespace Bookify.Data.EntityFramework.DataSeeds
         public static readonly List<MenuSeedModel> MenuLists = new List<MenuSeedModel>
     {
 
-    new MenuSeedModel("menu-1", "home", "fas fa-home", "UI.Dashboard", "Menü üzerindeki > Ana Sayfa", 1, "/", 1),
-     new MenuSeedModel("customer", "Customer.Singular", "fas fa-users", "UI.Customers", "Menü üzerindeki > Müşteriler", 2, null, 1,
-        new MenuSeedModel("customer", "Customer.Plural", "", "UI.Customers.Customer", "Menü üzerindeki > Müşteri", 3, "/corporates", 1),
-        new MenuSeedModel("supplier", "Supplier.Plural", "", "UI.Customers.Supplier", "Menü üzerindeki > Tedarikçi", 4, "/suppliers", 1)
+    new MenuSeedModel("Dashboard", "home", "fas fa-home", "UI.Dashboard", "Menü üzerindeki > Ana Sayfa", 1, "/", 1),
+     new MenuSeedModel("Authorization", "Customer.Singular", "fas fa-users", "UI.Authorization", "Menü üzerindeki > Müşteriler", 2, null, 1,
+        new MenuSeedModel("Role", "Role", "", "UI.Authorization.Role", "Menü üzerindeki > Müşteri", 3, "/roles", 1),
+        new MenuSeedModel("Users", "RoleTree", "", "UI.Authorization.Users", "Menü üzerindeki > Tedarikçi", 4, "/users", 1)
     )
     };
 

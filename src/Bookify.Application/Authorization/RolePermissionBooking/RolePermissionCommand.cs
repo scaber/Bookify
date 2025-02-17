@@ -1,5 +1,4 @@
 ﻿using Bookify.Application.Abstractions.Messaging;
-using MediatR;
 
 namespace Bookify.Application.Authorization.RolePermissionBooking;
 

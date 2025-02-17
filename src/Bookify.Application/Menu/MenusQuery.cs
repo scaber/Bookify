@@ -1,8 +1,5 @@
-﻿using Bookify.Application.Abstractions.Caching;
-using Bookify.Application.Abstractions.Messaging;
-using Bookify.Application.Apartments.SearchApartments;
-using Bookify.Application.Bookings.GetBooking;
+﻿using Bookify.Application.Abstractions.Messaging;
 
-namespace Bookify.Application.Menu;
- 
+namespace Bookify.Application.Menus;
+
 public sealed record MenusQuery() : IQuery<IReadOnlyList<MenuResponse>>;

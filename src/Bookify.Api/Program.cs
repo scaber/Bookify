@@ -28,7 +28,16 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
 
 builder.Services.AddTransient<DFiloSeeder>();
@@ -36,6 +45,7 @@ WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("AllowAllOrigins");  
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {

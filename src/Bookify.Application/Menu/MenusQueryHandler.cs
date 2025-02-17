@@ -1,70 +1,78 @@
-﻿using System.Data;
-using Bookify.Application.Abstractions.Authentication;
+﻿using Bookify.Application.Abstractions.Authentication;
 using Bookify.Application.Abstractions.Data;
 using Bookify.Application.Abstractions.Messaging;
-using Bookify.Application.Bookings.GetBooking;
 using Bookify.Domain.Abstractions;
-using Bookify.Domain.Bookings;
-using Dapper;
-using MediatR;
+using Bookify.Domain.Authorization;
+using Bookify.Domain.Menu;
+using Bookify.Domain.Users;
+using System.Data;
 
-namespace Bookify.Application.Menu;
+namespace Bookify.Application.Menus;
 
 internal sealed class MenusQueryHandler
     : IQueryHandler<MenusQuery, IReadOnlyList<MenuResponse>>
 {
-    private readonly IUserContext _userContext; 
+    private readonly IUserContext _userContext;
+    private readonly IMenuRepository _menuRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
+    private readonly IUserPermissionRepository _userPermissionRepository;
 
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
+    
 
-    public MenusQueryHandler(ISqlConnectionFactory sqlConnectionFactory,IUserContext userContext)
+    public MenusQueryHandler(ISqlConnectionFactory sqlConnectionFactory,
+        IUserContext userContext,
+        IMenuRepository menuRepository,
+        IUserRoleRepository userRoleRepository,
+        IUserPermissionRepository userPermissionRepository,
+        IRolePermissionRepository rolePermissionRepository)
     {
-        _sqlConnectionFactory = sqlConnectionFactory;
         _userContext = userContext;
+        _menuRepository = menuRepository;
+        _userRoleRepository = userRoleRepository;
+        _userPermissionRepository = userPermissionRepository;
     }
 
-    public async Task<Result<IReadOnlyList<MenuResponse>>> Handle(MenusQuery request, CancellationToken cancellationToken)
+    public Task<Result<IReadOnlyList<MenuResponse>>> Handle(MenusQuery request, CancellationToken cancellationToken)
     {
         var userId = _userContext.UserId;
 
-        using IDbConnection connection = _sqlConnectionFactory.CreateConnection();
+        var userPermissions = _userPermissionRepository.GetByUserId(userId);
+        var allPermissions = _userRoleRepository.GetUserRoles(userId).Union(userPermissions);
 
-        const string sql = """
-            WITH RECURSIVE MenuHierarchy AS (
-                -- Kullanıcının doğrudan yetkili olduğu menüler
-                SELECT DISTINCT m.*
-                FROM menu m
-                WHERE m.permission_id IN (
-                    SELECT ra.permission_id 
-                    FROM "user-roles" ur
-                    INNER JOIN roles r ON ur.role_id = r.Id
-                    INNER JOIN role_permissions ra ON r.Id = ra.role_id 
-                    WHERE ur.user_id = @userId
-                    UNION
-                    SELECT up.permission_id  
-                    FROM user_permission up 
-                    WHERE up.user_id = '@userId'
-                )
+        var menus = _menuRepository.GetByMenuWithPermissionIds(allPermissions);
+ 
 
-                UNION
+        var menuResponses = menus.Where(x=>x.TopMenuId is null).Select(menu => new MenuResponse
+        {
+            UniqueKey = menu.UniqueKey,
+            Title = menu.Title,
+            Icon = menu.Icon,
+            PermissionId = menu.PermissionId,
+            Url = menu.Url ?? string.Empty,
+            TopMenuId = menu.TopMenuId,
+            PermissionName = menu.PermissionName,
+            Order = menu.Order,
+            Tip = menu.Type,
+            SubMenus = MapToMenuResponseList(menu.SubMenus) 
+        }).ToList();
+        return Task.FromResult<Result<IReadOnlyList<MenuResponse>>>(menuResponses);
 
-                -- Yetkili menülerin alt menülerini de ekle
-                SELECT m.*
-                FROM menu m
-                INNER JOIN MenuHierarchy mh ON m.top_menu_id = mh.id
-            )
-            """;
-
-        IEnumerable<MenuResponse> menuResponses = await connection
-            .QueryAsync<MenuResponse,MenuResponse>(sql,new
-            {
-                userId
-            });
-
-       
-
-        return menuResponses.ToList();
+    }  
+    private static ICollection<MenuResponse> MapToMenuResponseList(ICollection<Menu> subMenus)
+    {
+        return subMenus?.Select(menu => new MenuResponse
+        {
+            UniqueKey = menu.UniqueKey,
+            Title = menu.Title,
+            Icon = menu.Icon,
+            PermissionId = menu.PermissionId,
+            Url = menu.Url,
+            TopMenuId = menu.TopMenuId,
+            PermissionName = menu.PermissionName,
+            Order = menu.Order,
+            Tip = menu.Type,
+            SubMenus = MapToMenuResponseList(menu.SubMenus)
+        }).ToList() ?? new List<MenuResponse>();
     }
-
-     
+            
 }

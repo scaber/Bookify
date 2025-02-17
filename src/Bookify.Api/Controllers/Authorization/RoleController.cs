@@ -24,7 +24,7 @@ public class RoleController : ControllerBase
      DateOnly endDate,
      CancellationToken cancellationToken)
     {
-        var query = new SearchRolesQuery(startDate, endDate);
+        var query = new SearchRolesQuery();
 
         Result<IReadOnlyList<RoleResponse>> result = await _sender.Send(query, cancellationToken);
 

@@ -2,6 +2,4 @@
 
 namespace Bookify.Application.Authorization.RoleBooking;
 
-public sealed record SearchRolesQuery(
-    DateOnly StartDate,
-    DateOnly EndDate) : IQuery<IReadOnlyList<RoleResponse>>;
+public sealed record SearchRolesQuery() : IQuery<IReadOnlyList<RoleResponse>>;

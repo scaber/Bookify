@@ -1,24 +1,16 @@
-﻿using System.Data;
-using Bookify.Api.Controllers.Authorization;
+﻿using Bookify.Api.Controllers.Authorization;
 using Bookify.Application.Abstractions.Data;
 using Bookify.Application.Abstractions.Messaging;
 using Bookify.Application.Authorization.RolePermissionTreeBooking;
 using Bookify.Domain.Abstractions;
-using Bookify.Domain.Bookings;
 using Dapper;
+using System.Data;
 
 namespace Bookify.Application.Apartments.SearchApartments;
 
 internal sealed class SearchRolePermissionTreeQueryHandler
     : IQueryHandler<SearchRolePermissionTreeQuery, IReadOnlyList<RolePermissionTreeResponse>>
-{
-    private static readonly int[] ActiveBookingStatuses =
-    {
-        (int)BookingStatus.Reserved,
-        (int)BookingStatus.Confirmed,
-        (int)BookingStatus.Completed
-    };
-
+{ 
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
     public SearchRolePermissionTreeQueryHandler(ISqlConnectionFactory sqlConnectionFactory)

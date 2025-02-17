@@ -1,18 +1,18 @@
-﻿using Bookify.Domain.Apartments;
-using Bookify.Domain.Menu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bookify.Domain.Menu;
 
-namespace Bookify.Infrastructure.Repositories ;
+namespace Bookify.Infrastructure.Repositories;
 
-    internal sealed class MenuRepository : Repository<Menu>, IMenuRepository
+internal sealed class MenuRepository : Repository<Menu>, IMenuRepository
 {
         public MenuRepository(ApplicationDbContext dbContext)
             : base(dbContext)
         {
         }
+
+    public   IEnumerable<Menu>  GetByMenuWithPermissionIds(IEnumerable<Guid> allPermissions)
+    {
+      return DbContext.Set<Menu>().Where(x => allPermissions.Contains(x.PermissionId)).Distinct(); 
     }
+ 
+}
  
